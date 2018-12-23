@@ -15,13 +15,13 @@ abstract class Creature implements Comparable<Creature> {
 
     @Override
     public int compareTo(final Creature o) {
-        if (this.stepsTaken != o.stepsTaken) {
-            return this.stepsTaken - o.stepsTaken;
+        if (stepsTaken != o.stepsTaken) {
+            return stepsTaken - o.stepsTaken;
         }
-        if (!this.cord.getSecond().equals(o.cord.getSecond())) {
-            return this.cord.getSecond() - o.cord.getSecond();
+        if (!cord.getSecond().equals(o.cord.getSecond())) {
+            return cord.getSecond() - o.cord.getSecond();
         }
-        return this.cord.getFirst() - o.cord.getFirst();
+        return cord.getFirst() - o.cord.getFirst();
     }
 
     Pair<Integer, Integer> getCord() {

@@ -1,7 +1,5 @@
 package com.gklijs.adventofcode.day22;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Function;
 
 public enum Equipment {
@@ -15,14 +13,13 @@ public enum Equipment {
         this.validation = validation;
     }
 
-    List<Equipment> others() {
-        List<Equipment> l = new ArrayList<>();
+    Equipment next(int target) {
         for (Equipment equipment : Equipment.values()) {
-            if (this != equipment) {
-                l.add(equipment);
+            if (this != equipment && equipment.isValid(target)) {
+                return equipment;
             }
         }
-        return l;
+        return null;
     }
 
     boolean isValid(int target) {

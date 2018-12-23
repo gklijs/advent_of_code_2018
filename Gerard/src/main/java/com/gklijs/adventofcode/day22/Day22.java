@@ -1,13 +1,12 @@
 package com.gklijs.adventofcode.day22;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import com.gklijs.adventofcode.utils.Pair;
 import com.gklijs.adventofcode.utils.Triple;
@@ -30,7 +29,7 @@ public class Day22 {
     public static Single<String> rescue(Observable<String> input) {
         return input
             .reduce(new Triple<>(null, null, null), Day22::reduce)
-            .map(i -> new Pair<>(map(i, 20), i))
+            .map(i -> new Pair<>(map(i, (i.getSecond() + i.getThird()) / 10), i))
             .map(Day22::rescue);
     }
 
@@ -102,35 +101,16 @@ public class Day22 {
 
     private static String rescue(Pair<int[][], Triple<Integer, Integer, Integer>> input) {
         Pair<Integer, Integer> target = new Pair<>(input.getSecond().getSecond(), input.getSecond().getThird());
-        Set<Route> routes = new HashSet<>();
-        Map<Pair<Integer, Integer>, Integer> past = new HashMap<>();
-        routes.add(new Route(input.getFirst(), 0, Equipment.TORCH, new Pair<>(0, 0)));
-        final int[] fastest = {Integer.MAX_VALUE};
-        while (!routes.isEmpty()) {
-            routes = routes.stream().flatMap(x -> x.nextRoutes().stream()).collect(Collectors.toSet());
-            List<Route> finished = routes.stream().filter(x -> x.rescued(target).isPresent()).collect(Collectors.toList());
-            for (Route finishedRoute : finished) {
-                routes.remove(finishedRoute);
-                finishedRoute.rescued(target).ifPresent(x -> {
-                    if (x < fastest[0]) {
-                        fastest[0] = x;
-                    }
-                });
-            }
-            routes = routes.stream().filter(x -> x.getTime() < fastest[0]).collect(Collectors.toSet());
-            for (Route route : routes) {
-                if (past.containsKey(route.getCurrentLocation())) {
-                    int currentBest = past.get(route.getCurrentLocation());
-                    if (route.getTime() < currentBest) {
-                        past.put(route.getCurrentLocation(), route.getTime());
-                    }
-                } else {
-                    past.put(route.getCurrentLocation(), route.getTime());
-                }
-            }
-            //the 3 should be a 6 cutting them off only when the tool isn't relevant anymore but this give the 'right' answer
-            routes = routes.stream().filter(x -> x.getTime() - 3 < past.get(x.getCurrentLocation())).collect(Collectors.toSet());
+        List<Route> routes = new ArrayList<>();
+        Map<Pair<Pair<Integer, Integer>, Equipment>, Integer> past = new HashMap<>();
+        past.put(new Pair<>(new Pair<>(0, 0), Equipment.TORCH), 0);
+        routes.add(new Route(input.getFirst(), 0, Equipment.TORCH, new Pair<>(0, 0), target, past));
+        while (!routes.get(0).getCurrentLocation().equals(target)) {
+            Route route = routes.get(0);
+            routes.remove(route);
+            routes.addAll(route.nextRoutes());
+            Collections.sort(routes);
         }
-        return Integer.toString(fastest[0]);
+        return Integer.toString(routes.get(0).getTime());
     }
 }

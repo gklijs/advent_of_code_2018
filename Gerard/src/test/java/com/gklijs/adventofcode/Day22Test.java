@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import static com.gklijs.adventofcode.test.TestUtil.testSingle;
 
-public class Day22Test {
+class Day22Test {
 
     String[] data = new String[]{
         "depth: 510",

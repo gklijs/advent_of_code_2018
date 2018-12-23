@@ -2,23 +2,28 @@ package com.gklijs.adventofcode.day22;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 import com.gklijs.adventofcode.utils.Direction;
 import com.gklijs.adventofcode.utils.Pair;
 
-class Route {
+class Route implements Comparable<Route> {
 
     private final int[][] map;
     private final int time;
     private final Equipment equipment;
     private final Pair<Integer, Integer> currentLocation;
+    private final Pair<Integer, Integer> target;
+    private Map<Pair<Pair<Integer, Integer>, Equipment>, Integer> past;
 
-    Route(final int[][] map, final int time, final Equipment equipment, final Pair<Integer, Integer> currentLocation) {
+    Route(final int[][] map, final int time, final Equipment equipment, final Pair<Integer, Integer> currentLocation,
+          final Pair<Integer, Integer> target, final Map<Pair<Pair<Integer, Integer>, Equipment>, Integer> past) {
         this.map = map;
         this.time = time;
         this.equipment = equipment;
         this.currentLocation = currentLocation;
+        this.target = target;
+        this.past = past;
     }
 
     private boolean validNext(Pair<Integer, Integer> nextLocation) {
@@ -28,31 +33,43 @@ class Route {
         return nextLocation.getFirst() < map[0].length && nextLocation.getSecond() < map.length;
     }
 
+    private boolean isFast(Route route) {
+        Pair<Pair<Integer, Integer>, Equipment> tag = new Pair<>(route.currentLocation, route.equipment);
+        if (past.containsKey(tag)) {
+            int oldTime = past.get(tag);
+            if (route.time < oldTime) {
+                past.put(tag, route.time);
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            past.put(tag, route.time);
+            return true;
+        }
+    }
+
     List<Route> nextRoutes() {
         List<Route> routes = new ArrayList<>();
         for (Direction direction : Direction.values()) {
             Pair<Integer, Integer> nextLocation = direction.nextCord(currentLocation);
+            boolean nextIsTarget = nextLocation.equals(target);
             if (!validNext(nextLocation)) {
                 continue;
             }
             int nextType = map[nextLocation.getSecond()][nextLocation.getFirst()];
+            Route route;
             if (equipment.isValid(nextType)) {
-                routes.add(new Route(map, time + 1, equipment, nextLocation));
+                route = new Route(map, nextIsTarget && equipment != Equipment.TORCH ? time + 8 : time + 1, equipment, nextLocation, target, past);
             } else {
-                for (Equipment newEquipment : equipment.others()) {
-                    routes.add(new Route(map, time + 8, newEquipment, nextLocation));
-                }
+                Equipment nextEquipment = equipment.next(map[currentLocation.getSecond()][currentLocation.getFirst()]);
+                route = new Route(map, nextIsTarget && nextEquipment != Equipment.TORCH ? time + 15 : time + 8, nextEquipment, nextLocation, target, past);
+            }
+            if (isFast(route)) {
+                routes.add(route);
             }
         }
         return routes;
-    }
-
-    Optional<Integer> rescued(final Pair<Integer, Integer> target) {
-        if (currentLocation.equals(target)) {
-            return Optional.of(equipment == Equipment.TORCH ? time : time + 7);
-        } else {
-            return Optional.empty();
-        }
     }
 
     int getTime() {
@@ -61,10 +78,6 @@ class Route {
 
     Pair<Integer, Integer> getCurrentLocation() {
         return currentLocation;
-    }
-
-    Equipment getEquipment() {
-        return equipment;
     }
 
     @Override
@@ -84,5 +97,10 @@ class Route {
         result = 31 * result + Integer.hashCode(time);
         result = 31 * result + equipment.hashCode();
         return result;
+    }
+
+    @Override
+    public int compareTo(final Route o) {
+        return time - o.time;
     }
 }
