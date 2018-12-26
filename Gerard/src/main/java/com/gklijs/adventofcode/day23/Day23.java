@@ -1,6 +1,7 @@
 package com.gklijs.adventofcode.day23;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -10,8 +11,7 @@ import io.reactivex.Single;
 
 public class Day23 {
 
-    private static final long H_M = 80_000_000L;
-    private static final long M = 900_001L;
+    private static final long[] HEURISTIC = new long[]{523_050L, 1_926_350L, 1_596_850L};
 
     private Day23() {
         //prevent instantiation
@@ -82,47 +82,44 @@ public class Day23 {
     }
 
     private static String most(List<long[]> input) {
-        int bestValue = 0;
         long[] bestPoint = new long[3];
-        for (long[] drone : input) {
-            for (Corner corner : Corner.values()) {
-                long[] newPoint = corner.point(drone, drone[3]);
-                int newValue = inReach(input, newPoint);
-                if (newValue > bestValue) {
-                    bestValue = newValue;
-                    bestPoint = newPoint;
-                }
-            }
-        }
-/*        for (long x = -1 * H_M; x < H_M; x += M) {
-            for (long y = -1 * H_M; y < H_M; y += M) {
-                for (long z = -1 * H_M; z < H_M; z += M) {
-                    long[] newPoint = new long[]{x, y, z};
+        int bestValue = inReach(input, bestPoint);
+        boolean changed = true;
+        while (changed) {
+            changed = false;
+            int loopBestValue = bestValue;
+            long[] loopBestPoint = bestPoint;
+            for (int i = 30; i > -1; i--) {
+                for (Mutator mutator : Mutator.values()) {
+                    long[] newPoint = mutator.mutatedValue(bestPoint, (long) Math.pow(2, i));
                     int newValue = inReach(input, newPoint);
-                    if (newValue > bestValue) {
-                        System.out.println("Best value is: " + bestValue);
-                        bestValue = newValue;
-                        bestPoint = newPoint;
+                    if (newValue > loopBestValue) {
+                        loopBestValue = newValue;
+                        loopBestPoint = newPoint;
+                    } else if (newValue == loopBestValue && absPoint(newPoint) < absPoint(loopBestPoint)) {
+                        loopBestPoint = newPoint;
                     }
                 }
             }
-        }*/
-        //68945158
-        System.out.println("Best value is: " + bestValue);
-        for (int i = 30; i > -1; i--) {
-            for (Corner corner : Corner.values()) {
-                long[] newPoint = corner.point(bestPoint, (int) Math.pow(2, i));
-                int newValue = inReach(input, newPoint);
-                if (newValue > bestValue) {
-                    bestValue = newValue;
-                    bestPoint = newPoint;
-                    System.out.println("Best value is now : " + bestValue);
-                } else if (newValue == bestValue && absPoint(newPoint) < absPoint(bestPoint)) {
-                    bestPoint = newPoint;
+            //set the HEURISTIC to get a fast but still correct outcome on my data, no guarantees for other data..
+            for (long h : HEURISTIC) {
+                for (Mutator mutator : Mutator.values()) {
+                    long[] newPoint = mutator.mutatedValue(bestPoint, h);
+                    int newValue = inReach(input, newPoint);
+                    if (newValue > loopBestValue) {
+                        loopBestValue = newValue;
+                        loopBestPoint = newPoint;
+                    } else if (newValue == loopBestValue && absPoint(newPoint) < absPoint(loopBestPoint)) {
+                        loopBestPoint = newPoint;
+                    }
                 }
             }
+            if (bestValue != loopBestValue || !Arrays.equals(bestPoint, loopBestPoint)) {
+                changed = true;
+                bestValue = loopBestValue;
+                bestPoint = loopBestPoint;
+            }
         }
-
         return Long.toString(absPoint(bestPoint));
     }
 }
