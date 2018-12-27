@@ -10,7 +10,7 @@ import java.util.Optional;
 
 import com.gklijs.adventofcode.utils.Pair;
 import com.gklijs.adventofcode.utils.Triple;
-import io.reactivex.Observable;
+import io.reactivex.Flowable;
 import io.reactivex.Single;
 
 public class Day22 {
@@ -19,14 +19,14 @@ public class Day22 {
         //prevent instantiation
     }
 
-    public static Single<String> riskOfArea(Observable<String> input) {
+    public static Single<String> riskOfArea(Flowable<String> input) {
         return input
             .reduce(new Triple<>(null, null, null), Day22::reduce)
             .map(i -> map(i, 0))
             .map(Day22::total);
     }
 
-    public static Single<String> rescue(Observable<String> input) {
+    public static Single<String> rescue(Flowable<String> input) {
         return input
             .reduce(new Triple<>(null, null, null), Day22::reduce)
             .map(i -> new Pair<>(map(i, (i.getSecond() + i.getThird()) / 10), i))

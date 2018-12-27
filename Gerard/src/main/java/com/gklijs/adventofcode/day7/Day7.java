@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.gklijs.adventofcode.utils.Pair;
-import io.reactivex.Observable;
+import io.reactivex.Flowable;
 import io.reactivex.Single;
 
 public class Day7 {
@@ -19,7 +19,7 @@ public class Day7 {
         //prevent instantiation
     }
 
-    public static Single<String> getOrder(Observable<String> possibleSteps) {
+    public static Single<String> getOrder(Flowable<String> possibleSteps) {
         return possibleSteps
             .map(Day7::toInstruction)
             .reduce(new HashMap<>(), Day7::toGraph)
@@ -27,7 +27,7 @@ public class Day7 {
             .map(x -> x.stream().map(Object::toString).collect(Collectors.joining()));
     }
 
-    public static Single<String> work(Observable<String> possibleSteps, int workers, int additionalSeconds) {
+    public static Single<String> work(Flowable<String> possibleSteps, int workers, int additionalSeconds) {
         return possibleSteps
             .map(Day7::toInstruction)
             .reduce(new HashMap<>(), Day7::toGraph)

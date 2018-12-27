@@ -11,7 +11,7 @@ import java.util.stream.IntStream;
 import com.gklijs.adventofcode.Utils;
 import com.gklijs.adventofcode.utils.Pair;
 import com.gklijs.adventofcode.utils.Triple;
-import io.reactivex.Observable;
+import io.reactivex.Flowable;
 import io.reactivex.Single;
 
 public class Day6 {
@@ -20,7 +20,7 @@ public class Day6 {
         //prevent instantiation
     }
 
-    public static Single<String> largestFiniteArea(Observable<String> coords) {
+    public static Single<String> largestFiniteArea(Flowable<String> coords) {
         return coords
             .map(Day6::getCord)
             .reduce(new Pair<>(new int[]{Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MIN_VALUE, Integer.MIN_VALUE}, new HashSet<>()), Day6::reduce)
@@ -32,7 +32,7 @@ public class Day6 {
             .map(Objects::toString);
     }
 
-    public static Single<String> toAllLessThen(Observable<String> coords, int threshHold) {
+    public static Single<String> toAllLessThen(Flowable<String> coords, int threshHold) {
         return coords
             .map(Day6::getCord)
             .reduce(new Pair<>(new int[]{Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MIN_VALUE, Integer.MIN_VALUE}, new HashSet<>()), Day6::reduce)

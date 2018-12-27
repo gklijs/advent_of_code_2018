@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import io.reactivex.Observable;
+import io.reactivex.Flowable;
 import io.reactivex.Single;
 
 public class Day24 {
@@ -17,14 +17,14 @@ public class Day24 {
         //prevent instantiation
     }
 
-    public static Single<String> fight(Observable<String> input) {
+    public static Single<String> fight(Flowable<String> input) {
         return input
             .reduce(new ArrayList<>(), Day24::reduce)
             .map(Day24::fight)
             .map(Day24::getTotalUnits);
     }
 
-    public static Single<String> fightEnahnced(Observable<String> input) {
+    public static Single<String> fightEnhanced(Flowable<String> input) {
         return input
             .reduce(new ArrayList<>(), Day24::reduce)
             .map(Day24::fightEnhanced)

@@ -32,13 +32,13 @@ import com.gklijs.adventofcode.day8.Day8;
 import com.gklijs.adventofcode.day9.Day9;
 import com.gklijs.adventofcode.errors.InvalidUseException;
 import com.gklijs.adventofcode.utils.Pair;
-import io.reactivex.Observable;
+import io.reactivex.Flowable;
 import io.reactivex.Single;
 
 public class Answers {
 
     private static final Logger LOGGER = Logger.getLogger(Answers.class.getName());
-    static final Map<Integer, Pair<Function<Observable<String>, Single<String>>, Function<Observable<String>, Single<String>>>> ANS = new HashMap<>();
+    static final Map<Integer, Pair<Function<Flowable<String>, Single<String>>, Function<Flowable<String>, Single<String>>>> ANS = new HashMap<>();
     private static final String FILE_FORMAT = "day%d.txt";
     private static final String FIRST_TASK_FORMAT = "first task for day %d";
     private static final String SECOND_TASK_FORMAT = "second task for day %d";
@@ -67,8 +67,8 @@ public class Answers {
         ANS.put(21, new Pair<>(Day21::min, Day21::max));
         ANS.put(22, new Pair<>(Day22::riskOfArea, Day22::rescue));
         ANS.put(23, new Pair<>(Day23::dronesInReach, Day23::mostDrones));
-        ANS.put(24, new Pair<>(Day24::fight, Day24::fightEnahnced));
-        ANS.put(25, new Pair<>(Day25::c, Day25::c));
+        ANS.put(24, new Pair<>(Day24::fight, Day24::fightEnhanced));
+        ANS.put(25, new Pair<>(Day25::c, Day25::f));
     }
 
     public static void main(String[] args) {
@@ -77,7 +77,7 @@ public class Answers {
         } else if (args.length == 1) {
             int day = Integer.parseInt(args[0]);
             if (ANS.containsKey(day)) {
-                Pair<Function<Observable<String>, Single<String>>, Function<Observable<String>, Single<String>>> pair = ANS.get(day);
+                Pair<Function<Flowable<String>, Single<String>>, Function<Flowable<String>, Single<String>>> pair = ANS.get(day);
                 printAnswer(String.format(FIRST_TASK_FORMAT, day), String.format(FILE_FORMAT, day), pair.getFirst());
                 printAnswer(String.format(SECOND_TASK_FORMAT, day), String.format(FILE_FORMAT, day), pair.getSecond());
             } else {
@@ -88,8 +88,8 @@ public class Answers {
         }
     }
 
-    private static void printAnswer(String task, String fileName, Function<Observable<String>, Single<String>> function) {
-        setTimeAndStart(task, function.apply(Utils.readLines(fileName).toObservable())
+    private static void printAnswer(String task, String fileName, Function<Flowable<String>, Single<String>> function) {
+        setTimeAndStart(task, function.apply(Utils.readLines(fileName))
             .doOnSuccess(result -> LOGGER.info(() -> task + ": " + result)));
     }
 
@@ -101,7 +101,7 @@ public class Answers {
             .subscribe();
     }
 
-    private static int startBoth(Map.Entry<Integer, Pair<Function<Observable<String>, Single<String>>, Function<Observable<String>, Single<String>>>> entry) {
+    private static int startBoth(Map.Entry<Integer, Pair<Function<Flowable<String>, Single<String>>, Function<Flowable<String>, Single<String>>>> entry) {
         printAnswer(String.format(FIRST_TASK_FORMAT, entry.getKey()), String.format(FILE_FORMAT, entry.getKey()), entry.getValue().getFirst());
         printAnswer(String.format(SECOND_TASK_FORMAT, entry.getKey()), String.format(FILE_FORMAT, entry.getKey()), entry.getValue().getSecond());
         return 2;

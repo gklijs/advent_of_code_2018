@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import io.reactivex.BackpressureStrategy;
+import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.functions.Function;
@@ -17,10 +19,10 @@ public class TestUtil {
         //prevent instantiation
     }
 
-    public static <T> void testSingle(TestScheduler scheduler, String[] input, Function<Observable<String>, Single<T>> function, T expected) {
+    public static <T> void testSingle(TestScheduler scheduler, String[] input, Function<Flowable<String>, Single<T>> function, T expected) {
         List<T> result = new ArrayList<T>();
         try {
-            function.apply((Observable.fromArray(input)))
+            function.apply((Observable.fromArray(input).toFlowable(BackpressureStrategy.BUFFER)))
                 .doOnSuccess(result::add)
                 .timeout(2, TimeUnit.SECONDS)
                 .subscribe();

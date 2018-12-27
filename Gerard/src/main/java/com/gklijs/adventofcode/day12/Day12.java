@@ -8,7 +8,7 @@ import java.util.Objects;
 
 import com.gklijs.adventofcode.utils.Pair;
 import com.gklijs.adventofcode.utils.Triple;
-import io.reactivex.Observable;
+import io.reactivex.Flowable;
 import io.reactivex.Single;
 
 public class Day12 {
@@ -17,7 +17,7 @@ public class Day12 {
         //prevent instantiation
     }
 
-    public static Single<String> plantIndex(Observable<String> input) {
+    public static Single<String> plantIndex(Flowable<String> input) {
         return input
             .reduce(new Pair<>(null, new HashMap<>()), Day12::update)
             .map(pair -> new Triple<>(pair.getFirst(), pair.getSecond(), 0))
@@ -26,7 +26,7 @@ public class Day12 {
             .map(Objects::toString);
     }
 
-    public static Single<String> plantIndexTwo(Observable<String> input) {
+    public static Single<String> plantIndexTwo(Flowable<String> input) {
         return input
             .reduce(new Pair<>(null, new HashMap<>()), Day12::update)
             .map(pair -> new Triple<>(pair.getFirst(), pair.getSecond(), 0))

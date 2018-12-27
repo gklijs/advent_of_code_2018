@@ -1,6 +1,5 @@
 package com.gklijs.adventofcode;
 
-import com.gklijs.adventofcode.day23.Day23;
 import com.gklijs.adventofcode.day24.Day24;
 import com.gklijs.adventofcode.test.TestSchedulerExtension;
 import io.reactivex.schedulers.TestScheduler;
@@ -29,6 +28,6 @@ class Day24Test {
     @ExtendWith(TestSchedulerExtension.class)
     @Test
     void example2(TestScheduler scheduler) {
-        testSingle(scheduler, data, Day24::fightEnahnced, "51");
+        testSingle(scheduler, data, Day24::fightEnhanced, "51");
     }
 }

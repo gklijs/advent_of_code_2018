@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Objects;
 
 import com.gklijs.adventofcode.utils.Pair;
-import io.reactivex.Observable;
+import io.reactivex.Flowable;
 import io.reactivex.Single;
 
 public class Day19 {
@@ -14,14 +14,14 @@ public class Day19 {
         //prevent instantiation
     }
 
-    public static Single<String> first(Observable<String> input) {
+    public static Single<String> first(Flowable<String> input) {
         return input
             .reduce(new Pair<>(null, new ArrayList<>()), Day19::update)
             .map(r -> execute(r, new int[6]))
             .map(Objects::toString);
     }
 
-    public static Single<String> second(Observable<String> input) {
+    public static Single<String> second(Flowable<String> input) {
         return input
             .reduce(new Pair<>(null, new ArrayList<>()), Day19::update)
             .map(r -> execute(r, new int[]{1, 0, 0, 0, 0, 0}))

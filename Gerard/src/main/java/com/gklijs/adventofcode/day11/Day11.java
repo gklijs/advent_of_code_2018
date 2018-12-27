@@ -2,7 +2,7 @@ package com.gklijs.adventofcode.day11;
 
 import java.util.Arrays;
 
-import io.reactivex.Observable;
+import io.reactivex.Flowable;
 import io.reactivex.Single;
 
 public class Day11 {
@@ -11,7 +11,7 @@ public class Day11 {
         //prevent instantiation
     }
 
-    public static Single<String> sizeThree(Observable<String> input) {
+    public static Single<String> sizeThree(Flowable<String> input) {
         return input
             .lastOrError()
             .map(Integer::parseInt)
@@ -20,7 +20,7 @@ public class Day11 {
             .map(r -> r[1] + "," + r[2]);
     }
 
-    public static Single<String> sizeVariable(Observable<String> input) {
+    public static Single<String> sizeVariable(Flowable<String> input) {
         return input
             .lastOrError()
             .map(Integer::parseInt)

@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.gklijs.adventofcode.utils.Pair;
-import io.reactivex.Observable;
+import io.reactivex.Flowable;
 import io.reactivex.Single;
 
 public class Day17 {
@@ -14,7 +14,7 @@ public class Day17 {
         //prevent instantiation
     }
 
-    public static Single<String> waterTotal(Observable<String> input) {
+    public static Single<String> waterTotal(Flowable<String> input) {
         return input
             .reduce(new ArrayList<>(), Day17::parseClay)
             .map(c -> new Pair<>(c, boundaries(c)))
@@ -23,7 +23,7 @@ public class Day17 {
             .map(Day17::waterReached);
     }
 
-    public static Single<String> waterRetained(Observable<String> input) {
+    public static Single<String> waterRetained(Flowable<String> input) {
         return input
             .reduce(new ArrayList<>(), Day17::parseClay)
             .map(c -> new Pair<>(c, boundaries(c)))

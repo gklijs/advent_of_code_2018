@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
+import io.reactivex.BackpressureStrategy;
 import io.reactivex.Single;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
@@ -115,7 +116,7 @@ public class MainVerticle extends AbstractVerticle {
                     List<String> input = Arrays.asList(req.getFormAttribute("input").split("\n"));
                     int day = Integer.parseInt(req.getFormAttribute("day"));
                     String part = req.getFormAttribute("part");
-                    Single<String> s = "1".equals(part) ? ANS.get(day).getFirst().apply(fromIterable(input)) : ANS.get(day).getSecond().apply(fromIterable(input));
+                    Single<String> s = "1".equals(part) ? ANS.get(day).getFirst().apply(fromIterable(input).toFlowable(BackpressureStrategy.BUFFER)) : ANS.get(day).getSecond().apply(fromIterable(input).toFlowable(BackpressureStrategy.BUFFER));
                     s.doOnSuccess(result ->
                         req.response().end(String.format(RESULT, "is-success", day, part, result)))
                         .doOnError(t -> req.response().end(String.format(RESULT, "is-danger", day, part,

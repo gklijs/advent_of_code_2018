@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Objects;
 
 import com.gklijs.adventofcode.utils.Pair;
-import io.reactivex.Observable;
+import io.reactivex.Flowable;
 import io.reactivex.Single;
 
 public class Day8 {
@@ -14,19 +14,19 @@ public class Day8 {
         //prevent instantiation
     }
 
-    public static Single<String> allMetaData(Observable<String> input) {
+    public static Single<String> allMetaData(Flowable<String> input) {
         return buildTree(input)
             .map(Day8::totalMeta)
             .map(Object::toString);
     }
 
-    public static Single<String> getValue(Observable<String> input) {
+    public static Single<String> getValue(Flowable<String> input) {
         return buildTree(input)
             .map(Day8::getValue)
             .map(Objects::toString);
     }
 
-    private static Single<Node> buildTree(Observable<String> input){
+    private static Single<Node> buildTree(Flowable<String> input) {
         return input
             .lastOrError()
             .map(Day8::split)

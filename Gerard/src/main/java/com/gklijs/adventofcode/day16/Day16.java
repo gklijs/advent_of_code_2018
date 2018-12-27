@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import com.gklijs.adventofcode.utils.Pair;
-import io.reactivex.Observable;
+import io.reactivex.Flowable;
 import io.reactivex.Single;
 
 public class Day16 {
@@ -17,7 +17,7 @@ public class Day16 {
         //prevent instantiation
     }
 
-    public static Single<String> threeOrMoreMatches(Observable<String> input) {
+    public static Single<String> threeOrMoreMatches(Flowable<String> input) {
         return input
             .reduce(new Pair<>(new ArrayList<>(), new ArrayList<>()), Day16::addLine)
             .map(Pair::getFirst)
@@ -25,7 +25,7 @@ public class Day16 {
             .map(Objects::toString);
     }
 
-    public static Single<String> getResult(Observable<String> input) {
+    public static Single<String> getResult(Flowable<String> input) {
         return input
             .reduce(new Pair<>(new ArrayList<>(), new ArrayList<>()), Day16::addLine)
             .map(p -> new Pair<>(getMapping(p.getFirst()), p.getSecond()))

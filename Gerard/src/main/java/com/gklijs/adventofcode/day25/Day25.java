@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 
@@ -14,11 +15,17 @@ public class Day25 {
         //prevent instantiation
     }
 
-    public static Single<String> c(Observable<String> input) {
+    public static Single<String> c(Flowable<String> input) {
         return input
             .reduce(new ArrayList<>(), Day25::reduce)
             .map(Day25::constellations)
             .map(x -> Integer.toString(x.size()));
+    }
+
+    public static Single<String> f(Flowable<String> input) {
+        return input
+            .last("bla")
+            .map(x -> "Triggered the underflow");
     }
 
     private static List<int[]> reduce(List<int[]> result, String input) {
@@ -47,15 +54,17 @@ public class Day25 {
         return false;
     }
 
-    private static int[] firstOverlap(List<Set<int[]>> result) {
+    private static void combine(List<Set<int[]>> result) {
+        List<Set<int[]>> remove = new ArrayList<>();
         for (int i = 0; i < result.size(); i++) {
-            for (int j = 0; j < result.size(); j++) {
-                if (i != j && overlap(result.get(i), result.get(j))) {
-                    return new int[]{i, j};
+            for (int j = i + 1; j < result.size(); j++) {
+                if (!remove.contains(result.get(j)) && overlap(result.get(i), result.get(j))) {
+                    result.get(i).addAll(result.get(j));
+                    remove.add(result.get(j));
                 }
             }
         }
-        return new int[0];
+        result.removeAll(remove);
     }
 
     private static List<Set<int[]>> constellations(List<int[]> input) {
@@ -66,11 +75,7 @@ public class Day25 {
         int count = 0;
         while (result.size() != count) {
             count = result.size();
-            int[] firstOverlap = firstOverlap(result);
-            if (firstOverlap.length == 2) {
-                result.get(firstOverlap[0]).addAll(result.get(firstOverlap[1]));
-                result.remove(firstOverlap[1]);
-            }
+            combine(result);
         }
         return result;
     }

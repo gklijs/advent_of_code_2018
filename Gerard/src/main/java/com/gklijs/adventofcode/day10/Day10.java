@@ -11,7 +11,7 @@ import java.util.concurrent.Callable;
 
 import com.gklijs.adventofcode.errors.InvalidInputException;
 import com.gklijs.adventofcode.utils.Pair;
-import io.reactivex.Observable;
+import io.reactivex.Flowable;
 import io.reactivex.Single;
 
 public class Day10 {
@@ -20,7 +20,7 @@ public class Day10 {
         //prevent instantiation
     }
 
-    public static Single<String> displayStars(Observable<String> input) {
+    public static Single<String> displayStars(Flowable<String> input) {
         return input
             .map(Day10::toStar)
             .collect((Callable<ArrayList<int[]>>) ArrayList::new, List::add)
@@ -29,7 +29,7 @@ public class Day10 {
             .map(Day10::show);
     }
 
-    public static Single<String> stepsNeeded(Observable<String> input) {
+    public static Single<String> stepsNeeded(Flowable<String> input) {
         return input
             .map(Day10::toStar)
             .collect((Callable<ArrayList<int[]>>) ArrayList::new, List::add)

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.gklijs.adventofcode.utils.Pair;
-import io.reactivex.Observable;
+import io.reactivex.Flowable;
 import io.reactivex.Single;
 
 public class Day21 {
@@ -13,13 +13,13 @@ public class Day21 {
         //prevent instantiation
     }
 
-    public static Single<String> min(Observable<String> input) {
+    public static Single<String> min(Flowable<String> input) {
         return input
             .reduce(new Pair<>(null, new ArrayList<>()), Day19::update)
             .map(Day21::min);
     }
 
-    public static Single<String> max(Observable<String> input) {
+    public static Single<String> max(Flowable<String> input) {
         return input
             .reduce(new Pair<>(null, new ArrayList<>()), Day19::update)
             .map(Day21::max);

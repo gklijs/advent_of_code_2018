@@ -1,7 +1,7 @@
 package com.gklijs.adventofcode.day14;
 
 import com.gklijs.adventofcode.utils.Pair;
-import io.reactivex.Observable;
+import io.reactivex.Flowable;
 import io.reactivex.Single;
 
 public class Day14 {
@@ -10,7 +10,7 @@ public class Day14 {
         //prevent instantiation
     }
 
-    public static Single<String> tenAfter(Observable<String> input) {
+    public static Single<String> tenAfter(Flowable<String> input) {
         return input
             .lastOrError()
             .map(Integer::parseInt)
@@ -19,7 +19,7 @@ public class Day14 {
             .map(Day14::printLastTen);
     }
 
-    public static Single<String> doTill(Observable<String> input) {
+    public static Single<String> doTill(Flowable<String> input) {
         return input
             .lastOrError()
             .map(Day14::toIntArray)

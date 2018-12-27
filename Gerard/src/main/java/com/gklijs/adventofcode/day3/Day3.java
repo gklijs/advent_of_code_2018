@@ -9,7 +9,7 @@ import java.util.function.IntConsumer;
 import java.util.stream.IntStream;
 
 import com.gklijs.adventofcode.utils.Pair;
-import io.reactivex.Observable;
+import io.reactivex.Flowable;
 import io.reactivex.Single;
 
 public class Day3 {
@@ -20,7 +20,7 @@ public class Day3 {
 
     private static final Set<Integer> ONLY_ZERO = Collections.singleton(0);
 
-    public static Single<String> multipleClaims(Observable<String> ids) {
+    public static Single<String> multipleClaims(Flowable<String> ids) {
         return ids
             .map(Patch::new)
             .reduce(new int[1000][1000], Day3::claim)
@@ -28,7 +28,7 @@ public class Day3 {
             .map(Objects::toString);
     }
 
-    public static Single<String> noClaims(Observable<String> ids) {
+    public static Single<String> noClaims(Flowable<String> ids) {
         return ids
             .map(Patch::new)
             .reduce(new Pair<>(new int[1000][1000], new HashSet<>()), Day3::claim2)

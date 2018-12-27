@@ -6,7 +6,7 @@ import java.util.List;
 
 import com.gklijs.adventofcode.Utils;
 import com.gklijs.adventofcode.utils.Triple;
-import io.reactivex.Observable;
+import io.reactivex.Flowable;
 import io.reactivex.Single;
 
 public class Day18 {
@@ -15,7 +15,7 @@ public class Day18 {
         //prevent instantiation
     }
 
-    public static Single<String> afterTen(Observable<String> input) {
+    public static Single<String> afterTen(Flowable<String> input) {
         return input
             .reduce(new ArrayList<>(), Utils::addString)
             .map(Utils::toArrayOfArrays)
@@ -23,7 +23,7 @@ public class Day18 {
             .map(Day18::response);
     }
 
-    public static Single<String> afterBillion(Observable<String> input) {
+    public static Single<String> afterBillion(Flowable<String> input) {
         return input
             .reduce(new ArrayList<>(), Utils::addString)
             .map(Utils::toArrayOfArrays)

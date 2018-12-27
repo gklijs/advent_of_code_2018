@@ -10,7 +10,7 @@ import java.util.Set;
 import com.gklijs.adventofcode.utils.Direction;
 import com.gklijs.adventofcode.utils.Pair;
 import com.gklijs.adventofcode.utils.Triple;
-import io.reactivex.Observable;
+import io.reactivex.Flowable;
 import io.reactivex.Single;
 
 public class Day20 {
@@ -19,7 +19,7 @@ public class Day20 {
         //prevent instantiation
     }
 
-    public static Single<String> mostDoors(Observable<String> input) {
+    public static Single<String> mostDoors(Flowable<String> input) {
         return input
             .lastOrError()
             .map(Day20::toMap)
@@ -27,7 +27,7 @@ public class Day20 {
             .map(Day20::mostDoors);
     }
 
-    public static Single<String> thousandDoors(Observable<String> input) {
+    public static Single<String> thousandDoors(Flowable<String> input) {
         return input
             .lastOrError()
             .map(Day20::toMap)

@@ -9,7 +9,7 @@ import java.util.Set;
 
 import com.gklijs.adventofcode.Utils;
 import com.gklijs.adventofcode.utils.Pair;
-import io.reactivex.Observable;
+import io.reactivex.Flowable;
 import io.reactivex.Single;
 import static io.reactivex.Observable.concat;
 
@@ -19,8 +19,8 @@ public class Day5 {
         //prevent instantiation
     }
 
-    public static Single<String> react(Observable<String> polymer) {
-        return concat(polymer, Single.just("").repeat().toObservable())
+    public static Single<String> react(Flowable<String> polymer) {
+        return concat(polymer.toObservable(), Single.just("").repeat().toObservable())
             .scan(new Pair<>(new ArrayList<>(), -1), Day5::doReaction)
             .takeUntil(result -> result.getSecond() == 0)
             .lastOrError()
@@ -28,8 +28,8 @@ public class Day5 {
             .map(Objects::toString);
     }
 
-    public static Single<String> reactDeleteReact(Observable<String> polymer) {
-        return concat(polymer, Single.just("").repeat().toObservable())
+    public static Single<String> reactDeleteReact(Flowable<String> polymer) {
+        return concat(polymer.toObservable(), Single.just("").repeat().toObservable())
             .scan(new Pair<>(new ArrayList<>(), -1), Day5::doReaction)
             .takeUntil(result -> result.getSecond() == 0)
             .lastOrError()

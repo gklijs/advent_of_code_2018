@@ -6,7 +6,7 @@ import java.util.Set;
 
 import com.gklijs.adventofcode.Utils;
 import com.gklijs.adventofcode.utils.Pair;
-import io.reactivex.Observable;
+import io.reactivex.Flowable;
 import io.reactivex.Single;
 
 public class Day1 {
@@ -15,14 +15,14 @@ public class Day1 {
         //prevent instantiation
     }
 
-    public static Single<String> calculateFrequency(Observable<String> frequencyChanges) {
+    public static Single<String> calculateFrequency(Flowable<String> frequencyChanges) {
         return frequencyChanges
             .map(Integer::valueOf)
             .reduce(0, Integer::sum)
             .map(Objects::toString);
     }
 
-    public static Single<String> firstDoubleFrequency(Observable<String> frequencyChanges) {
+    public static Single<String> firstDoubleFrequency(Flowable<String> frequencyChanges) {
         return frequencyChanges
             .repeat()
             .map(Integer::valueOf)

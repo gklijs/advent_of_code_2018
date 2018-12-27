@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import com.gklijs.adventofcode.errors.InvalidInputException;
-import io.reactivex.Observable;
+import io.reactivex.Flowable;
 import io.reactivex.Single;
 
 public class Day23 {
@@ -17,14 +17,14 @@ public class Day23 {
         //prevent instantiation
     }
 
-    public static Single<String> dronesInReach(Observable<String> input) {
+    public static Single<String> dronesInReach(Flowable<String> input) {
         return input
             .map(Day23::toDrone)
             .collect((Callable<ArrayList<long[]>>) ArrayList::new, List::add)
             .map(Day23::inReach);
     }
 
-    public static Single<String> mostDrones(Observable<String> input) {
+    public static Single<String> mostDrones(Flowable<String> input) {
         return input
             .map(Day23::toDrone)
             .collect((Callable<ArrayList<long[]>>) ArrayList::new, List::add)

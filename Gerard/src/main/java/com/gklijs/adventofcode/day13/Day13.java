@@ -6,7 +6,7 @@ import java.util.List;
 
 import com.gklijs.adventofcode.Utils;
 import com.gklijs.adventofcode.utils.Pair;
-import io.reactivex.Observable;
+import io.reactivex.Flowable;
 import io.reactivex.Single;
 
 public class Day13 {
@@ -15,7 +15,7 @@ public class Day13 {
         //prevent instantiation
     }
 
-    public static Single<String> firstCrash(Observable<String> input) {
+    public static Single<String> firstCrash(Flowable<String> input) {
         return input
             .reduce(new ArrayList<>(), Utils::addString)
             .map(Day13::addMineCards)
@@ -23,7 +23,7 @@ public class Day13 {
             .map(Day13::display);
     }
 
-    public static Single<String> lastCard(Observable<String> input) {
+    public static Single<String> lastCard(Flowable<String> input) {
         return input
             .reduce(new ArrayList<>(), Utils::addString)
             .map(Day13::addMineCards)

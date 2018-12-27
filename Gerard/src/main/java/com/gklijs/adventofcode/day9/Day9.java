@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.stream.IntStream;
 
 import com.gklijs.adventofcode.errors.InvalidInputException;
-import io.reactivex.Observable;
+import io.reactivex.Flowable;
 import io.reactivex.Single;
 
 public class Day9 {
@@ -13,7 +13,7 @@ public class Day9 {
         //prevent instantiation
     }
 
-    public static Single<String> winningScore(Observable<String> input) {
+    public static Single<String> winningScore(Flowable<String> input) {
         return input
             .lastOrError()
             .map(i -> playGame(i, 1))
@@ -21,7 +21,7 @@ public class Day9 {
             .map(Object::toString);
     }
 
-    public static Single<String> winningScore(Observable<String> input, int multiplier) {
+    public static Single<String> winningScore(Flowable<String> input, int multiplier) {
         return input
             .lastOrError()
             .map(i -> playGame(i, multiplier))

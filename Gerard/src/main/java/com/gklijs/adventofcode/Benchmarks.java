@@ -18,6 +18,8 @@ import com.gklijs.adventofcode.day2.Day2;
 import com.gklijs.adventofcode.day20.Day20;
 import com.gklijs.adventofcode.day22.Day22;
 import com.gklijs.adventofcode.day23.Day23;
+import com.gklijs.adventofcode.day24.Day24;
+import com.gklijs.adventofcode.day25.Day25;
 import com.gklijs.adventofcode.day3.Day3;
 import com.gklijs.adventofcode.day4.Day4;
 import com.gklijs.adventofcode.day5.Day5;
@@ -25,7 +27,7 @@ import com.gklijs.adventofcode.day6.Day6;
 import com.gklijs.adventofcode.day7.Day7;
 import com.gklijs.adventofcode.day8.Day8;
 import com.gklijs.adventofcode.day9.Day9;
-import io.reactivex.Observable;
+import io.reactivex.Flowable;
 import io.reactivex.Single;
 import org.openjdk.jmh.annotations.Benchmark;
 
@@ -34,8 +36,8 @@ public class Benchmarks {
     public static void main(String[] args) {
     }
 
-    private static String benchAnswer(String fileName, Function<Observable<String>, Single<String>> function) {
-        return function.apply(Utils.readLines(fileName).toObservable()).blockingGet();
+    private static String benchAnswer(String fileName, Function<Flowable<String>, Single<String>> function) {
+        return function.apply(Utils.readLines(fileName)).blockingGet();
     }
 
     /*
@@ -335,7 +337,6 @@ public class Benchmarks {
     /*
     3657.777 ± 300.188  ops/s
      */
-    @Benchmark
     public static String bench1of22() {
         return benchAnswer("day22.txt", Day22::riskOfArea);
     }
@@ -343,7 +344,6 @@ public class Benchmarks {
     /*
     0.192 ±   0.007  ops/s
      */
-    @Benchmark
     public static String bench2of22() {
         return benchAnswer("day22.txt", Day22::rescue);
     }
@@ -356,5 +356,25 @@ public class Benchmarks {
     @Benchmark
     public static String bench2of23() {
         return benchAnswer("day23.txt", Day23::mostDrones);
+    }
+
+    @Benchmark
+    public static String bench1of24() {
+        return benchAnswer("day24.txt", Day24::fight);
+    }
+
+    @Benchmark
+    public static String bench2of24() {
+        return benchAnswer("day24.txt", Day24::fightEnhanced);
+    }
+
+    @Benchmark
+    public static String bench1of25() {
+        return benchAnswer("day25.txt", Day25::c);
+    }
+
+    @Benchmark
+    public static String bench2of25() {
+        return benchAnswer("day25.txt", Day25::f);
     }
 }

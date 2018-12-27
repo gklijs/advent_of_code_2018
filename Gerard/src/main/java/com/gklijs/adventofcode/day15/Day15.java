@@ -10,7 +10,7 @@ import java.util.Set;
 import com.gklijs.adventofcode.Utils;
 import com.gklijs.adventofcode.utils.Pair;
 import com.gklijs.adventofcode.utils.Triple;
-import io.reactivex.Observable;
+import io.reactivex.Flowable;
 import io.reactivex.Single;
 
 public class Day15 {
@@ -19,7 +19,7 @@ public class Day15 {
         //prevent instantiation
     }
 
-    public static Single<String> lastTurn(Observable<String> input) {
+    public static Single<String> lastTurn(Flowable<String> input) {
         return input
             .reduce(new ArrayList<>(), Utils::addString)
             .map(Day15::addCreatures)
@@ -27,7 +27,7 @@ public class Day15 {
             .map(Day15::answer);
     }
 
-    public static Single<String> noDeadElf(Observable<String> input) {
+    public static Single<String> noDeadElf(Flowable<String> input) {
         return input
             .reduce(new ArrayList<>(), Utils::addString)
             .map(Day15::addCreatures)

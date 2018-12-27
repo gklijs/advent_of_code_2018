@@ -7,7 +7,7 @@ import java.util.Set;
 
 import com.gklijs.adventofcode.Utils;
 import com.gklijs.adventofcode.utils.Pair;
-import io.reactivex.Observable;
+import io.reactivex.Flowable;
 import io.reactivex.Single;
 
 public class Day2 {
@@ -16,7 +16,7 @@ public class Day2 {
         //prevent instantiation
     }
 
-    public static Single<String> checksum(Observable<String> ids) {
+    public static Single<String> checksum(Flowable<String> ids) {
         return ids
             .map(Utils::toList)
             .map(Utils::toFrequencyMap)
@@ -26,7 +26,7 @@ public class Day2 {
             .map(Objects::toString);
     }
 
-    public static Single<String> commonLetters(Observable<String> ids) {
+    public static Single<String> commonLetters(Flowable<String> ids) {
         return ids
             .flatMap(Day2::allExcludes)
             .scan(new Pair<Set<String>, String>(new HashSet<>(), null), Utils::firstDuplicate)
@@ -49,8 +49,8 @@ public class Day2 {
         return result;
     }
 
-    private static Observable<String> allExcludes(String input) {
-        return Observable.range(0, input.length())
+    private static Flowable<String> allExcludes(String input) {
+        return Flowable.range(0, input.length())
             .map(i -> input.substring(0, i) + input.substring(i + 1));
     }
 }

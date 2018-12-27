@@ -9,7 +9,7 @@ import java.util.stream.IntStream;
 import com.gklijs.adventofcode.Utils;
 import com.gklijs.adventofcode.utils.Pair;
 import com.gklijs.adventofcode.utils.Triple;
-import io.reactivex.Observable;
+import io.reactivex.Flowable;
 import io.reactivex.Single;
 
 public class Day4 {
@@ -18,7 +18,7 @@ public class Day4 {
         //prevent instantiation
     }
 
-    public static Single<String> bestOpportunity(Observable<String> guardEvents) {
+    public static Single<String> bestOpportunity(Flowable<String> guardEvents) {
         return guardEvents
             .map(GuardEvent::new)
             .toSortedList()
@@ -29,7 +29,7 @@ public class Day4 {
             .map(x -> Integer.toString(x.getFirst() * x.getSecond()));
     }
 
-    public static Single<String> mostAtSameMinute(Observable<String> guardEvents) {
+    public static Single<String> mostAtSameMinute(Flowable<String> guardEvents) {
         return guardEvents
             .map(GuardEvent::new)
             .toSortedList()
