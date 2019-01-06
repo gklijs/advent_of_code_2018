@@ -1,13 +1,11 @@
 package com.gklijs.adventofcode.day10;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.Callable;
 
 import com.gklijs.adventofcode.errors.InvalidInputException;
 import com.gklijs.adventofcode.utils.Pair;
@@ -23,7 +21,7 @@ public class Day10 {
     public static Single<String> displayStars(Flowable<String> input) {
         return input
             .map(Day10::toStar)
-            .collect((Callable<ArrayList<int[]>>) ArrayList::new, List::add)
+            .toList()
             .map(Day10::process)
             .map(Pair::getFirst)
             .map(Day10::show);
@@ -32,7 +30,7 @@ public class Day10 {
     public static Single<String> stepsNeeded(Flowable<String> input) {
         return input
             .map(Day10::toStar)
-            .collect((Callable<ArrayList<int[]>>) ArrayList::new, List::add)
+            .toList()
             .map(Day10::process)
             .map(Pair::getSecond)
             .map(Objects::toString);

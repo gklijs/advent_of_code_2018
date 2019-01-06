@@ -348,31 +348,45 @@ public class Benchmarks {
         return benchAnswer("day22.txt", Day22::rescue);
     }
 
-    @Benchmark
+    /*
+    1308.590 ±  11.726  ops/s
+     */
     public static String bench1of23() {
         return benchAnswer("day23.txt", Day23::dronesInReach);
     }
 
-    @Benchmark
+    /*
+    21.024 ±   0.514  ops/s
+     */
     public static String bench2of23() {
         return benchAnswer("day23.txt", Day23::mostDrones);
     }
 
-    @Benchmark
+    /*
+    665.446 ±  11.998  ops/s
+     */
     public static String bench1of24() {
         return benchAnswer("day24.txt", Day24::fight);
     }
 
-    @Benchmark
+    /*
+    7.104 ±   0.133  ops/s
+     */
     public static String bench2of24() {
         return benchAnswer("day24.txt", Day24::fightEnhanced);
     }
 
+    /*
+    5.667 ±   0.037  ops/s
+     */
     @Benchmark
     public static String bench1of25() {
         return benchAnswer("day25.txt", Day25::c);
     }
 
+    /*
+    14274.711 ± 224.414  ops/s
+     */
     @Benchmark
     public static String bench2of25() {
         return benchAnswer("day25.txt", Day25::f);

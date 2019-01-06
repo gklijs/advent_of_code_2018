@@ -2,99 +2,38 @@ package com.gklijs.adventofcode;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import io.reactivex.BackpressureStrategy;
+import io.reactivex.Flowable;
 import io.reactivex.Single;
-import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.http.HttpMethod;
-import io.vertx.core.http.HttpServerRequest;
+import io.vertx.core.json.JsonObject;
+import io.vertx.reactivex.core.AbstractVerticle;
+import io.vertx.reactivex.core.http.HttpServerRequest;
+import io.vertx.reactivex.ext.web.common.template.TemplateEngine;
+import io.vertx.reactivex.ext.web.templ.freemarker.FreeMarkerTemplateEngine;
 import static com.gklijs.adventofcode.Answers.ANS;
 import static io.reactivex.Observable.fromIterable;
 
 public class MainVerticle extends AbstractVerticle {
 
     private static final Logger LOGGER = Logger.getLogger(MainVerticle.class.getName());
-
-    private static final String FORM = "<link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css\">" +
-        "   <section class=\"section\">\n" +
-        "       <div class=\"container\">" +
-        "       <div class=\"field is-horizontal\">" +
-        "           <form action=\"/\" method=\"post\">\n" +
-        "               <div class=\"field\">\n" +
-        "                   <label class=\"label\" for=\"input\">Enter the input:</label>\n" +
-        "                   <textarea rows=\"5\" cols=\"100\" id=\"input\" name=\"input\"></textarea>\n" +
-        "               </div>\n" +
-        "               <div class=\"control\">\n" +
-        "                   <div class=\"select\">\n" +
-        "                       <select id=\"day\" name=\"day\">\n" +
-        "                           <option value=\"1\">Day 1</option>\n" +
-        "                           <option value=\"2\">Day 2</option>\n" +
-        "                           <option value=\"3\">Day 3</option>\n" +
-        "                           <option value=\"4\">Day 4</option>\n" +
-        "                           <option value=\"5\">Day 5</option>\n" +
-        "                           <option value=\"6\">Day 6</option>\n" +
-        "                           <option value=\"7\">Day 7</option>\n" +
-        "                           <option value=\"8\">Day 8</option>\n" +
-        "                           <option value=\"9\">Day 9</option>\n" +
-        "                           <option value=\"10\">Day 10</option>\n" +
-        "                           <option value=\"11\">Day 11</option>\n" +
-        "                           <option value=\"12\">Day 12</option>\n" +
-        "                           <option value=\"13\">Day 13</option>\n" +
-        "                           <option value=\"14\">Day 14</option>\n" +
-        "                           <option value=\"15\">Day 15</option>\n" +
-        "                           <option value=\"16\">Day 16</option>\n" +
-        "                           <option value=\"17\">Day 17</option>\n" +
-        "                           <option value=\"18\">Day 18</option>\n" +
-        "                           <option value=\"19\">Day 19</option>\n" +
-        "                           <option value=\"20\">Day 20</option>\n" +
-        "                           <option value=\"21\">Day 21</option>\n" +
-        "                           <option value=\"22\">Day 22</option>\n" +
-        "                           <option value=\"23\">Day 23</option>\n" +
-        "                           <option value=\"24\">Day 24</option>\n" +
-        "                           <option value=\"25\">Day 25</option>\n" +
-        "                       </div>\n" +
-        "                   </select>\n" +
-        "               </div>\n" +
-        "               <div class=\"control\">\n" +
-        "                   <label class=\"radio\">\n" +
-        "                        <input type=\"radio\" name=\"part\" value=\"1\" checked>\n" +
-        "                           part 1\n" +
-        "                   </label>\n" +
-        "                   <label class=\"radio\">\n" +
-        "                       <input type=\"radio\" name=\"part\" value=\"2\">\n" +
-        "                           part 2\n" +
-        "                   </label>\n" +
-        "               </div>\n" +
-        "               <div class=\"control\">\n" +
-        "                   <button class=\"button is-primary\" type=\"submit\">Send</button>\n" +
-        "               </div>\n" +
-        "               </div>\n" +
-        "           </form>\n" +
-        "       </div>\n" +
-        "       </div>\n" +
-        "  </section>";
-
-    private static final String RESULT = "<link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css\">" +
-        "   <section class=\"section\">\n" +
-        "       <div class=\"container\">" +
-        "           <div class=\"notification %s\">" +
-        "               <p>Result for day: %d part %s</p>" +
-        "               <p>%s</p>" +
-        "           </div>\n" +
-        "           <a href=\"/\">\n" +
-        "               <button class=\"button is-link\">Return</button>\n" +
-        "           </a>\n" +
-        "       </div>\n" +
-        "  </section>";
+    private static final String DAY = "day";
+    private static final String PART = "part";
+    private static final String INPUT = "input";
+    private static final String ERROR = "error";
+    private static final String RESULT = "result";
 
     @Override
     public void start(Future<Void> startFuture) {
-        //Route route = router.route()
+        final TemplateEngine engine = FreeMarkerTemplateEngine.create(vertx);
         vertx.createHttpServer()
-            .requestHandler(getRequestHandler()).listen(8080, http -> {
+            .requestHandler(getRequestHandler(engine)).listen(8080, http -> {
             if (http.succeeded()) {
                 startFuture.complete();
                 LOGGER.info("HTTP server started on http://localhost:8080");
@@ -104,25 +43,55 @@ public class MainVerticle extends AbstractVerticle {
         });
     }
 
-    private Handler<HttpServerRequest> getRequestHandler() {
+    private Handler<Void> postHandler(TemplateEngine engine, HttpServerRequest req) {
+        return v -> {
+            List<String> input = Arrays.stream(req.getFormAttribute(INPUT)
+                .split("\n"))
+                .map(String::trim)
+                .collect(Collectors.toList());
+            String day = req.getFormAttribute(DAY);
+            String part = req.getFormAttribute(PART);
+            getPostContext(input, day, part)
+                .flatMap(json -> engine.rxRender(json, json.containsKey(RESULT) ? "success.ftl" : "error.ftl"))
+                .doOnSuccess(result -> req.response().end(result))
+                .doOnError(t -> req.response().end(t.toString()))
+                .subscribe();
+        };
+    }
+
+    private Single<JsonObject> getPostContext(List<String> input, String day, String part) {
+        JsonObject result = new JsonObject();
+        result.put(DAY, day);
+        result.put(PART, part);
+        if (input == null || input.isEmpty() || day == null || part == null) {
+            result.put(ERROR, "one of the parameters is null, or input is empty");
+            return Single.just(result);
+        }
+        Function<Flowable<String>, Single<String>> answerFunction = null;
+        try {
+            int dayInt = Integer.parseInt(day);
+            answerFunction = "1".equals(part) ? ANS.get(dayInt).getFirst() : ANS.get(dayInt).getSecond();
+        } catch (NullPointerException | NumberFormatException e) {
+            result.put(ERROR, e.toString());
+            return Single.just(result);
+        }
+        return answerFunction.apply(fromIterable(input).toFlowable(BackpressureStrategy.BUFFER))
+            .map(answer -> result.put(RESULT, answer))
+            .onErrorReturn(t -> result.put(ERROR, t.toString()));
+    }
+
+    private Handler<HttpServerRequest> getRequestHandler(TemplateEngine engine) {
         return req -> {
             req.response()
                 .putHeader("content-type", "text/html");
-            if (req.method().equals(HttpMethod.GET)) {
-                req.response().end(FORM);
-            } else {
+            if (req.method().equals(HttpMethod.POST)) {
                 req.setExpectMultipart(true);
-                req.endHandler(v -> {
-                    List<String> input = Arrays.asList(req.getFormAttribute("input").split("\n"));
-                    int day = Integer.parseInt(req.getFormAttribute("day"));
-                    String part = req.getFormAttribute("part");
-                    Single<String> s = "1".equals(part) ? ANS.get(day).getFirst().apply(fromIterable(input).toFlowable(BackpressureStrategy.BUFFER)) : ANS.get(day).getSecond().apply(fromIterable(input).toFlowable(BackpressureStrategy.BUFFER));
-                    s.doOnSuccess(result ->
-                        req.response().end(String.format(RESULT, "is-success", day, part, result)))
-                        .doOnError(t -> req.response().end(String.format(RESULT, "is-danger", day, part,
-                            "Some error occurred, please make sure you selected the right day for the input. Error was: " + t.toString())))
-                        .subscribe();
-                });
+                req.endHandler(postHandler(engine, req));
+            } else {
+                engine.rxRender(new JsonObject(), "question.ftl")
+                    .doOnSuccess(result -> req.response().end(result))
+                    .doOnError(t -> req.response().end(t.toString()))
+                    .subscribe();
             }
         };
     }

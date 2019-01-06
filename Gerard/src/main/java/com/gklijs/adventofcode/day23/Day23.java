@@ -1,9 +1,7 @@
 package com.gklijs.adventofcode.day23;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import com.gklijs.adventofcode.errors.InvalidInputException;
 import io.reactivex.Flowable;
@@ -20,14 +18,14 @@ public class Day23 {
     public static Single<String> dronesInReach(Flowable<String> input) {
         return input
             .map(Day23::toDrone)
-            .collect((Callable<ArrayList<long[]>>) ArrayList::new, List::add)
+            .toList()
             .map(Day23::inReach);
     }
 
     public static Single<String> mostDrones(Flowable<String> input) {
         return input
             .map(Day23::toDrone)
-            .collect((Callable<ArrayList<long[]>>) ArrayList::new, List::add)
+            .toList()
             .map(Day23::most);
     }
 
