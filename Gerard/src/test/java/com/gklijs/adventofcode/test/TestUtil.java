@@ -1,8 +1,7 @@
 package com.gklijs.adventofcode.test;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
@@ -20,18 +19,16 @@ public class TestUtil {
     }
 
     public static <T> void testSingle(TestScheduler scheduler, String[] input, Function<Flowable<String>, Single<T>> function, T expected) {
-        List<T> result = new ArrayList<T>();
+        AtomicReference<T> result = new AtomicReference<>();
         try {
             function.apply((Observable.fromArray(input).toFlowable(BackpressureStrategy.BUFFER)))
-                .doOnSuccess(result::add)
+                .doOnSuccess(result::set)
                 .timeout(2, TimeUnit.SECONDS)
                 .subscribe();
         } catch (Exception e) {
             e.printStackTrace();
         }
         scheduler.advanceTimeBy(2, TimeUnit.SECONDS);
-        assertFalse(result.isEmpty());
-        assertEquals(1, result.size());
-        assertEquals(expected, result.get(0));
+        assertEquals(expected, result.get());
     }
 }
